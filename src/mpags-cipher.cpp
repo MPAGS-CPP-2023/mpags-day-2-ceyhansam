@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 
 //Project Headers
 #include "TransformChar.hpp"
@@ -24,7 +25,10 @@ int main(int argc, char* argv[])
     // Process command line arguments - ignore zeroth element, as we know this
     // to be the program name and don't need to worry about it
     const bool commandLineStatus = processCommandLine(cmdLineArgs, helpRequested, versionRequested, inputFile, outputFile);
-    if (commandLineStatus == false) {std::cout << "An error was encountered" << std::endl;}
+    if (commandLineStatus == false) {
+        std::cout << "An error occured" << std::endl;
+    }
+    
 
     // Handle help, if requested
     if (helpRequested) {
@@ -60,24 +64,50 @@ int main(int argc, char* argv[])
     // Read in user input from stdin/file
     // Warn that input file option not yet implemented
     if (!inputFile.empty()) {
-        std::cerr << "[warning] input from file ('" << inputFile
-                  << "') not implemented yet, using stdin\n";
+        std::ifstream in_file{inputFile};
+        bool ok_to_read = in_file.good();
+        if (!ok_to_read) {
+            std::cerr << "[warning] error occurred opening input stream" << std::endl; 
+        } else {
+            while (in_file >> inputChar) {
+                inputText += transformChar(inputChar);
+            }
+        }
+        in_file.close();
+        // std::cerr << "[warning] input from file ('" << inputFile
+        //           << "') not implemented yet, using stdin\n";
     }
 
-    // loop over each character from user input
-    while (std::cin >> inputChar) {
-        inputText += transformChar(inputChar);
+    else {
+        while (std::cin >> inputChar) {
+            inputText += transformChar(inputChar);
+        }
     }
+    
+    // loop over each character from user input
+    
 
     // Print out the transliterated text
 
     // Warn that output file option not yet implemented
     if (!outputFile.empty()) {
-        std::cerr << "[warning] output to file ('" << outputFile
-                  << "') not implemented yet, using stdout\n";
+        std::ofstream out_file{outputFile, std::ios::app};
+        bool ok_to_read = out_file.good();
+
+        if (!ok_to_read) {
+            std::cerr << "[warning] error occured opening output stream" << std::endl;
+        } else {
+            out_file << inputText;
+            out_file.close();
+        }
+        // std::cerr << "[warning] output to file ('" << outputFile
+        //           << "') not implemented yet, using stdout\n";
     }
 
-    std::cout << inputText << std::endl;
+    else {
+        std::cout << inputText << std::endl;
+    }
+    
 
     // No requirement to return from main, but we do so for clarity
     // and for consistency with other functions
