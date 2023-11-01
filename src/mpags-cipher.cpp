@@ -7,6 +7,7 @@
 //Project Headers
 #include "TransformChar.hpp"
 #include "ProcessCmdLine.hpp"
+#include "CeaserCipher.hpp"
 
 
 int main(int argc, char* argv[])
@@ -20,11 +21,13 @@ int main(int argc, char* argv[])
     bool versionRequested{false};
     std::string inputFile{""};
     std::string outputFile{""};
+    std::string cipherKey{""};
+    bool encrypt{false};
     
 
     // Process command line arguments - ignore zeroth element, as we know this
     // to be the program name and don't need to worry about it
-    const bool commandLineStatus = processCommandLine(cmdLineArgs, helpRequested, versionRequested, inputFile, outputFile);
+    const bool commandLineStatus = processCommandLine(cmdLineArgs, helpRequested, versionRequested, inputFile, outputFile, cipherKey, encrypt);
     if (commandLineStatus == false) {
         std::cout << "An error occured" << std::endl;
     }
@@ -59,7 +62,8 @@ int main(int argc, char* argv[])
 
     // Initialise variables
     char inputChar{'x'};
-    std::string inputText;
+    std::string inputText{""};
+    std::string cipherText{""};
 
     // Read in user input from stdin/file
     // Warn that input file option not yet implemented
@@ -85,10 +89,13 @@ int main(int argc, char* argv[])
     }
     
     // loop over each character from user input
-    
-
     // Print out the transliterated text
 
+
+    cipherText = CeaserCipher(inputText, stoi(cipherKey), encrypt);
+    //std::cout << inputText << cipherKey;
+
+    //std::string cipherText;
     // Warn that output file option not yet implemented
     if (!outputFile.empty()) {
         std::ofstream out_file{outputFile, std::ios::app};
@@ -97,7 +104,7 @@ int main(int argc, char* argv[])
         if (!ok_to_read) {
             std::cerr << "[warning] error occured opening output stream" << std::endl;
         } else {
-            out_file << inputText;
+            out_file << cipherText;
             out_file.close();
         }
         // std::cerr << "[warning] output to file ('" << outputFile

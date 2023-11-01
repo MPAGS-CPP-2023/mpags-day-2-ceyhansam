@@ -5,6 +5,6 @@
 #include <vector>
 
 bool processCommandLine(const std::vector<std::string>& args, bool& helpRequested, bool& versionRequested, 
-std::string& inputFileName, std::string& outFileName);
+std::string& inputFileName, std::string& outFileName, std::string& key, bool& encrypt);
 
 #endif

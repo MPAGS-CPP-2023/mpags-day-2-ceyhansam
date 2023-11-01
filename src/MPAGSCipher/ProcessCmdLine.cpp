@@ -3,7 +3,7 @@
 #include <iostream>
 
 bool processCommandLine(const std::vector<std::string>& args, bool& helpRequested, bool& versionRequested, 
-std::string& inputFileName, std::string& outFileName) {
+std::string& inputFileName, std::string& outFileName, std::string& cipherKey, bool& encrypt) {
 
     bool processStatus{true}; //Add flag to see if any problems were encountered
     
@@ -43,6 +43,31 @@ std::string& inputFileName, std::string& outFileName) {
                 outFileName = args[i + 1];
                 ++i;
             }
+        } else if (args[i] == "-e") {
+            //Handle encrpytion option
+            if (i == nCmdLineArgs - 1) {
+                std::cerr << "[error] -e requires an encryption key argument"
+                          << std::endl;
+                processStatus = false;
+                break;
+            } else {
+                cipherKey= args[i + 1]; 
+                encrypt = true;
+                ++i;
+            }
+
+        } else if (args[i] == "-d") {
+            if (i == nCmdLineArgs - 1) {
+                std::cerr << "[error] -d requires a decryption key argument"
+                          << std::endl;
+                processStatus = false;
+                break;
+            } else {
+                cipherKey = args[i + 1];
+                encrypt = false;
+                ++i;
+            }
+
         } else {
             // Have an unknown flag to output error message and return non-zero
             // exit status to indicate failure
