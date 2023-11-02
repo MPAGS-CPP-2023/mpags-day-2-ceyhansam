@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
     if (helpRequested) {
         // Line splitting for readability
         std::cout
-            << "Usage: mpags-cipher [-h/--help] [--version] [-i <file>] [-o <file>]\n\n"
+            << "Usage: mpags-cipher [-h/--help] [--version] [-i <file>] [-o <file>] [-e <key>] [-d <key>]\n\n"
             << "Encrypts/Decrypts input alphanumeric text using classical ciphers\n\n"
             << "Available options:\n\n"
             << "  -h|--help        Print this help message and exit\n\n"
@@ -46,6 +46,8 @@ int main(int argc, char* argv[])
             << "                   Stdin will be used if not supplied\n\n"
             << "  -o FILE          Write processed text to FILE\n"
             << "                   Stdout will be used if not supplied\n\n"
+            << "  -e KEY           Encrypt using a Ceaser cipher with KEY as the shift\n\n"
+            << "  -d KEY           Decrypt a Ceaser cipher with KEY as the shift \n\n"
             << std::endl;
         // Help requires no further action, so return from main
         // with 0 used to indicate success
@@ -91,9 +93,23 @@ int main(int argc, char* argv[])
     // loop over each character from user input
     // Print out the transliterated text
 
+    bool testing = true; //Test all possible shifts
+    if (testing) {
+        for (std::size_t i{0}; i < 26; i++) {
+            std::string outText{""};
+            cipherText = CeaserCipher(inputText, i, true);
+            outText = CeaserCipher(cipherText, i, false);
+            if (inputText != outText) {
+                std::cout << "Cipher Broke" << std::endl;
+                std::cout << cipherText << std::endl;
+                std::cout << outText << std::endl;
+            } else {
+                std::cout << "Passed Shift = " << i << std::endl;
+            }
+        }
+    }
 
     cipherText = CeaserCipher(inputText, stoi(cipherKey), encrypt);
-    //std::cout << inputText << cipherKey;
 
     //std::string cipherText;
     // Warn that output file option not yet implemented
@@ -112,7 +128,7 @@ int main(int argc, char* argv[])
     }
 
     else {
-        std::cout << inputText << std::endl;
+        std::cout << cipherText << std::endl;
     }
     
 
