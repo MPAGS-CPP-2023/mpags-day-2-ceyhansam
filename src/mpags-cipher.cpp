@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
     // loop over each character from user input
     // Print out the transliterated text
 
-    bool testing = true; //Test all possible shifts
+    bool testing = false; //Test all possible shifts
     if (testing) {
         for (std::size_t i{0}; i < 26; i++) {
             std::string outText{""};
